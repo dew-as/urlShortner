@@ -1,0 +1,147 @@
+<% title='List Page' %>
+
+  <div class="container-fluid p-5">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <!-- Left: Site Name -->
+        <input type="search" class="form-control form-control-sm w-25" placeholder="Search" aria-label="Search"
+          oninput="searchInput(this.value)" />
+        <!-- Right: Logout Button -->
+        <div class="d-flex align-items-center ms-auto">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/api/urlAdd">Add Product</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <%= message.user %>
+              </a>
+            </li>
+          </ul>
+          <button class="btn btn-dark btn-md ml-2">
+            <a class="text-decoration-none text-white" href="/api/logout">Logout</a>
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Search Results -->
+    <div id="search-results" class="mt-4 position-absolute" style="z-index: 1;">
+      <div id="list-group" class="bg-secondary rounded rounded-2">
+      </div>
+    </div>
+
+    <h1 class="text-center mb-5">URL Listing</h1>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <% if (objects.length> 0) { %>
+          <% objects.forEach((object)=> { %>
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <%= object.title %>
+                </h4>
+                <p class="card-text text-muted">Created at: <%= object.submittedAt.toLocaleString() %>
+                </p>
+                <h5 class="card-text">
+                  <%= object.url %>
+                </h5>
+                <p class="card-text">
+                  <%= object.description %>
+                </p>
+                <a href="/api/shortUrl/<%= object.shortUrl %>" class="btn btn-sm btn-info">
+                  <%= object.shortUrl %>
+                </a>
+                <div class="d-flex justify-content-end mt-4">
+                  <a href="/api/urlUpdate/<%= object._id %>" class="btn btn-sm btn-warning mr-2">Edit</a>
+                  <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
+                    data-target="#deleteModal-<%= object._id %>">
+                    Delete
+                  </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal-<%= object._id %>" tabindex="-1" role="dialog"
+                  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <h4>Do you want to delete <%= object.title %>
+                        </h4>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a type="button" href="/api/urlDelete/<%= object._id %>" class="btn btn-danger">Delete</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+
+                  <!-- Pagination links -->
+                  <nav aria-label="Page navigation example" class="text-center">
+                    <ul class="pagination justify-content-center">
+                      <% if (pagination.hasPrevPage) { %>
+                        <li class="page-item">
+                          <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="?page=<%= pagination.prevPage %>">Previous</a>
+                        </li>
+                        <% } %>
+                          <% for (let page_number=1; page_number <=pagination.totalPages; page_number++) { %>
+                            <% if (pagination.page===page_number) { %>
+                              <li class="page-item active">
+                                <span class="page-link">
+                                  <%= page_number %>
+                                </span>
+                              </li>
+                              <% } else { %>
+                                <li class="page-item">
+                                  <a class="page-link" href="?page=<%= page_number %>">
+                                    <%= page_number %>
+                                  </a>
+                                </li>
+                                <% } %>
+                                  <% } %>
+                                    <% if (pagination.hasNextPage) { %>
+                                      <li class="page-item">
+                                        <a class="page-link" href="?page=<%= pagination.nextPage %>">Next</a>
+                                      </li>
+                                      <li class="page-item">
+                                        <a class="page-link" href="?page=<%= pagination.totalPages %>">Last &raquo;</a>
+                                      </li>
+                                      <% } %>
+                    </ul>
+                  </nav>
+                  <% } else { %>
+                    <p class="text-center">No URLs found.</p>
+                    <% } %>
+                      <% if (typeof message==='string' && message.length> 0) { %>
+                        <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
+                          <%= message %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <script>
+                          setTimeout(function () {
+                            const alert = document.querySelector('.alert');
+                            if (alert) {
+                              alert.classList.remove('show');
+                            }
+                          }, 3000); // Adjust time as needed
+                        </script>
+                        <% } %>
+              </div>
+            </div>
+      </div>

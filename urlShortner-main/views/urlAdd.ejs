@@ -1,0 +1,33 @@
+<% title = 'Submit URL' %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4"><%= update ? 'Update URL' : 'Submit URL' %></h2>
+    
+    <form action="<%= update ? '/api/urlUpdate/' + data._id : '/api/urlAdd' %>" method="post">
+        <div class="form-group">
+          <label for="url">URL</label>
+          <input type="url" class="form-control" id="url" name="url" placeholder="Enter URL" required value="<%= update ? data.url : '' %>">
+        </div>
+        
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" required value="<%= update ? data.title : '' %>">
+        </div>
+        
+        <input type="hidden" id="submittedAt" name="submittedAt" value="<%= update ? data.submittedAt : Date.now() %>">
+        
+        <% if (!update) { %>
+          <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        <% } else { %>
+          <button type="submit" class="btn btn-warning btn-block">Update</button>
+        <% } %>
+      </form>
+      
+      <% if (message.length > 0) { %>
+        <div class="alert alert-danger mt-4"><%= message %></div>
+      <% } %>
+    </div>
+  </div>
+</div>
